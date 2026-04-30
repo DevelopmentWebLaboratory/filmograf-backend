@@ -1,24 +1,24 @@
+using StackExchange.Redis;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
+using Filmograf.BaseLibrary.Util;
+using Filmograf.BaseLibrary.Caching;
+using Filmograf.BaseLibrary.DataAccess.Serializers;
 using Filmograf.BaseLibrary.DataAccess.Repositories;
 using Filmograf.BaseLibrary.Integrations;
 using Filmograf.BaseLibrary.Integrations.Requested;
 using Filmograf.BaseLibrary.Services;
-using Filmograf.BaseLibrary.Util;
+using Filmograf.AnalyticsService.Util;
 using Filmograf.AnalyticsService.Caching;
+using Filmograf.AnalyticsService.Services;
 using Filmograf.AnalyticsService.DataAccess.Repositories;
 using Filmograf.AnalyticsService.Integration.Hosted;
-using StackExchange.Redis;
-
-using Filmograf.AnalyticsService.Services;
 using Filmograf.AnalyticsService.Services.Charts;
 using Filmograf.AnalyticsService.Services.Integrations;
 using Filmograf.AnalyticsService.Services.Middlewares;
 using Filmograf.AnalyticsService.Services.Personalized;
 using Filmograf.AnalyticsService.Services.ViewsCounting;
-using Filmograf.AnalyticsService.Util;
-using Filmograf.BaseLibrary.Caching;
-using Filmograf.BaseLibrary.DataAccess.Serializers;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace Filmograf.AnalyticsService;
 
@@ -143,6 +143,7 @@ public class Program
         builder.Services.AddScoped<TopPicksRepository>();
         builder.Services.AddScoped<MovieRepository>(); // да, тут немного теряем SRP (Single Responsibility Principle)
         builder.Services.AddScoped<CollectionRepository>(); // и тут немного теряем SRP)
+        builder.Services.AddScoped<MovieRateRepository>();
         
         // cache
         builder.Services.AddScoped<ClickEntityCaching>();

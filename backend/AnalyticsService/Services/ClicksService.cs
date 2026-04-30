@@ -1,3 +1,4 @@
+using Filmograf.AnalyticsService.Services.RateCounting;
 using Filmograf.AnalyticsService.Services.ViewsCounting;
 using Filmograf.BaseLibrary.Models.HttpExceptions;
 
@@ -10,22 +11,27 @@ public class ClicksService
     private readonly CollectionClicksService _collectionClicksService;
     private readonly MovieViewsCountingService _movieViewsCountingService;
     private readonly CollectionViewsCountingService _collectionViewsCountingService;
+    private readonly MovieRateCountingService _movieRateCountingService;
 
     private delegate Task HandleClickEntity(string entityId, Guid userId);
     private readonly Dictionary<string, HandleClickEntity> _clickHandlers;
     
     private delegate Task HandleClicksCountEntity(string entityId);
     private readonly Dictionary<string, HandleClicksCountEntity> _clickCountingHandlers;
+    
+    private delegate Task HandleRateCountEntity(string entityId);
+    private readonly Dictionary<string, HandleRateCountEntity> _rateCountingHandlers;
 
     public ClicksService(ClickIntervalValidator clickIntervalValidator, MovieClicksService movieClicksService, 
         CollectionClicksService collectionClicksService, MovieViewsCountingService movieViewsCountingService,
-        CollectionViewsCountingService collectionViewsCountingService)
+        CollectionViewsCountingService collectionViewsCountingService, MovieRateCountingService movieRateCountingService)
     {
         _clickIntervalValidator = clickIntervalValidator;
         _movieClicksService = movieClicksService;
         _collectionClicksService = collectionClicksService;
         _movieViewsCountingService = movieViewsCountingService;
         _collectionViewsCountingService = collectionViewsCountingService;
+        _movieRateCountingService = movieRateCountingService;
 
         _clickHandlers = new Dictionary<string, HandleClickEntity>
         {
@@ -37,6 +43,11 @@ public class ClicksService
         {
             { "Movie", _movieViewsCountingService.HandleCountAsync },
             { "Collection", _collectionViewsCountingService.HandleCountAsync }
+        };
+        
+        _rateCountingHandlers = new Dictionary<string, HandleRateCountEntity>
+        {
+            { "Movie", _movieRateCountingService.HandleCountRateAsync }
         };
     }
 
@@ -51,7 +62,10 @@ public class ClicksService
         var clickCountingHandler = _clickCountingHandlers[entityType];
         if (clickHandler == null) throw new BadRequestHttpException("InvalidClickCountingHandler");
 
+        var rateCountingHandler = _rateCountingHandlers.GetValueOrDefault(entityId);
+
         await clickHandler(entityId, userId);
         await clickCountingHandler(entityId);
+        if (rateCountingHandler != null) await rateCountingHandler(entityId);
     }
 }

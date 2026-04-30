@@ -77,14 +77,14 @@ public class MoviesParserService
         {
             var allMovies = await _movieRepository.GetAllAsync(i*100, 100);
             var tasks = new List<Task>();
-
+        
             foreach (var movie in allMovies)
             {
                 if (movie.AgeLimit != 0) continue;
                 tasks.Add(ParseOneMovieDetailsAsync(movie.Id));
                 count++;
             }
-
+        
             await Task.WhenAll(tasks);
         }
         return count;
