@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Filmograf.BaseLibrary.Models.Repo;
 
-namespace Filmograf.AnalyticsService;
+namespace Filmograf.SearchIndexerService;
 
 public class MappingProfile : Profile
 {

@@ -85,3 +85,6 @@ backend/ParsingService/ParsingService.csproj.user
 
 backend/MoviesService/MoviesService.sln.DotSettings.user
 backend/MoviesService/MoviesService.csproj.user
+/backend/SearchIndexerService/.idea
+/backend/SearchIndexerService/bin
+/backend/SearchIndexerService/obj

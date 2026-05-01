@@ -54,23 +54,30 @@ services:
       retries: 5
     command: mongod --config /etc/mongod.conf --auth
 
-  film-auth-service:
-    build:
-      context: .
-      dockerfile: AuthService/Dockerfile
-    container_name: film-auth-service
-    restart: unless-stopped
+  film-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=supersecret
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # Ограничение памяти
     ports:
-      - "5090:8080"
-    depends_on:
-      film-redis:
-        condition: service_healthy
-      film-mongodb:
-        condition: service_healthy
+      - "9200:9200"
     volumes:
-      - ./shared/env.docker.json:/shared/env.json
-    user: root
+      - es_data:/usr/share/elasticsearch/data
+
+  film-kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - film-elasticsearch
 
 volumes:
   mongodb_data:
   mongodb_config:
+  es_data:

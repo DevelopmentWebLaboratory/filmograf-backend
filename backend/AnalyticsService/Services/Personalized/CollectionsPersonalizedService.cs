@@ -1,4 +1,3 @@
-using Filmograf.AnalyticsService.DataAccess.Repositories;
 using Filmograf.AnalyticsService.Util;
 using Filmograf.BaseLibrary.DataAccess.Repositories;
 using Filmograf.BaseLibrary.Models.Dto;

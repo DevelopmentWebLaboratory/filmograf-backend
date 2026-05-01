@@ -5,22 +5,16 @@ using MongoDB.Driver;
 using Filmograf.BaseLibrary.Util;
 using Filmograf.BaseLibrary.Caching;
 using Filmograf.BaseLibrary.DataAccess.Serializers;
-using Filmograf.BaseLibrary.DataAccess.Repositories;
 using Filmograf.BaseLibrary.Integrations;
 using Filmograf.BaseLibrary.Integrations.Requested;
+using Filmograf.BaseLibrary.Models.Repo;
 using Filmograf.BaseLibrary.Services;
-using Filmograf.AnalyticsService.Util;
-using Filmograf.AnalyticsService.Caching;
-using Filmograf.AnalyticsService.Services;
-using Filmograf.AnalyticsService.Integration.Hosted;
-using Filmograf.AnalyticsService.Services.Charts;
-using Filmograf.AnalyticsService.Services.Integrations;
-using Filmograf.AnalyticsService.Services.Middlewares;
-using Filmograf.AnalyticsService.Services.Personalized;
-using Filmograf.AnalyticsService.Services.RateCounting;
-using Filmograf.AnalyticsService.Services.ViewsCounting;
+using Filmograf.SearchIndexerService.Util;
+using Filmograf.SearchIndexerService.Services;
+using Filmograf.SearchIndexerService.Services.Integrations;
+using Filmograf.SearchIndexerService.Services.Middlewares;
 
-namespace Filmograf.AnalyticsService;
+namespace Filmograf.SearchIndexerService;
 
 public class Program
 {
@@ -91,7 +85,6 @@ public class Program
             return client.GetDatabase(mongoDbSettings.DatabaseName);
         });
 
-        builder.Services.AddScoped<MovieRepository>();
         builder.Services.AddHostedService<MongoIndexService>();
     }
     
@@ -105,9 +98,6 @@ public class Program
         
         // integration contexts
         builder.Services.AddScoped<IntegrationContextBase>();
-        builder.Services.AddScoped<ClickEntityIntegrationContext>();
-        builder.Services.AddScoped<CompileChartIntegrationContext>();
-        builder.Services.AddScoped<CompilePersonalizedIntegrationContext>();
     }
 
     private static void SettingComponents(WebApplicationBuilder builder)
@@ -117,40 +107,16 @@ public class Program
         
         // services
         builder.Services.AddScoped<RedisService>();
-        builder.Services.AddScoped<ClicksService>();
-        builder.Services.AddScoped<MovieClicksService>();
-        builder.Services.AddScoped<CollectionClicksService>();
-        builder.Services.AddScoped<ClickIntervalValidator>();
-        builder.Services.AddScoped<MoviesChartService>();
-        builder.Services.AddScoped<ChartService>();
-        builder.Services.AddScoped<TopPicksService>();
-        builder.Services.AddScoped<PersonalizedService>();
-        builder.Services.AddScoped<MoviesPersonalizedService>();
-        builder.Services.AddScoped<CollectionsChartService>();
-        builder.Services.AddScoped<CollectionsPersonalizedService>();
-        builder.Services.AddScoped<CollectionViewsCountingService>();
-        builder.Services.AddScoped<MovieViewsCountingService>();
         builder.Services.AddScoped<MissionPlannerService>();
-        builder.Services.AddScoped<MovieRateCountingService>();
         
         // providers
         // ...
         
         // repositories
-        builder.Services.AddScoped<MoviesClicksAnalyticRepository>();
-        builder.Services.AddScoped<UserMoviesActivityDailyRepository>();
-        builder.Services.AddScoped<CollectionsClicksAnalyticRepository>();
-        builder.Services.AddScoped<UserCollectionsActivityDailyRepository>();
-        builder.Services.AddScoped<TopPicksRepository>();
-        builder.Services.AddScoped<MovieRepository>(); // да, тут немного теряем SRP (Single Responsibility Principle)
-        builder.Services.AddScoped<CollectionRepository>(); // и тут немного теряем SRP)
-        builder.Services.AddScoped<MovieRateRepository>();
+        builder.Services.AddScoped<MoviesClicksAnalyticRepo>();
+        builder.Services.AddScoped<CollectionClicksAnalyticRepo>();
         
         // cache
-        builder.Services.AddScoped<ClickEntityCaching>();
-        builder.Services.AddScoped<MoviesCaching>();
-        builder.Services.AddScoped<CollectionsCaching>();
-        builder.Services.AddScoped<TopPickCaching>();
         builder.Services.AddScoped<MissionPlannerCache>();
     }
 }

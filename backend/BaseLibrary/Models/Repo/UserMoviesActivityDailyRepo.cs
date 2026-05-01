@@ -1,6 +1,4 @@
-using Filmograf.BaseLibrary.Models.Repo;
-
-namespace Filmograf.AnalyticsService.Models.Repo;
+namespace Filmograf.BaseLibrary.Models.Repo;
 
 public class MovieCache
 {
