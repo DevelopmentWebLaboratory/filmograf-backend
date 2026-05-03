@@ -1,4 +1,5 @@
-﻿using Filmograf.BaseLibrary.Models.Dto;
+﻿using System.Linq.Expressions;
+using Filmograf.BaseLibrary.Models.Dto;
 using Filmograf.BaseLibrary.Models.Repo;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -12,6 +13,18 @@ public abstract class RepositoryBase<TBase> where TBase : RepoBase
     protected RepositoryBase(IMongoDatabase database, string collectionName)
     {
         _collection = database.GetCollection<TBase>(collectionName);
+    }
+    
+    public Task<IAsyncCursor<TBase>> GetCursorAsync(CancellationToken ct = default)
+    {
+        Expression<Func<TBase, bool>> defaultFilter = _ => true;
+        return GetCursorAsync(defaultFilter, ct);
+    }
+    
+    public Task<IAsyncCursor<TBase>> GetCursorAsync(Expression<Func<TBase, bool>> filter, CancellationToken ct = default)
+    {
+        return _collection.Find(filter)
+            .ToCursorAsync(cancellationToken: ct);
     }
     
     public async Task<TBase?> GetByIdAsync(string id, CancellationToken ct = default)

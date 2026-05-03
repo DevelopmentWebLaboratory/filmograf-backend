@@ -2,7 +2,7 @@
 using Filmograf.BaseLibrary.Models.Repo;
 using MongoDB.Driver;
 
-namespace Filmograf.SearchIndexerService.Services;
+namespace Filmograf.SearchIndexerService.Services.Hosted;
 
 public class MongoIndexService : IHostedService
 {

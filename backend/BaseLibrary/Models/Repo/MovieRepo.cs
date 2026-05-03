@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Filmograf.BaseLibrary.Models.Repo;
 
+[BsonIgnoreExtraElements]
 public class MovieRepo : RepoBase
 {
     [MaxLength(256)]
