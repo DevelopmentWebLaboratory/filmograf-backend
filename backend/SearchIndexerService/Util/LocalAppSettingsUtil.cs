@@ -31,4 +31,6 @@ public class LocalAppSettingsUtil
 
 public class LocalAppSettings
 {
+    [DefaultValue(60)]
+    public int ReindexPickedMoviesInterval { get; set; }
 }

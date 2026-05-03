@@ -12,9 +12,9 @@ public class SearchIndexBootstrap : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
-        var searchIndexServiceType = typeof(SearchIndexService);
+        var searchIndexServiceType = typeof(MovieSearchIndexService);
         var searchIndexService = scope.ServiceProvider.GetRequiredService(searchIndexServiceType);
 
-        await (searchIndexService as SearchIndexService).ReindexAllMoviesAsync(batchSize: 1000, ct);
+        await (searchIndexService as MovieSearchIndexService).ReindexAllMoviesAsync(batchSize: 1000, ct);
     }
 }

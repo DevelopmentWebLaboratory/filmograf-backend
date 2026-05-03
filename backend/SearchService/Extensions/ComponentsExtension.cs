@@ -41,7 +41,7 @@ internal static class ComponentsExtension
         services.AddScoped<GenreProvider>();
         
         // index providers
-        services.AddScoped<MovieSearchIndexProvider>();
+        services.AddSingleton<MovieSearchIndexProvider>();
         
         // repositories
         services.AddScoped<MovieRepository>();
