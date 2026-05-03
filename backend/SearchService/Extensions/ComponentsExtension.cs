@@ -5,6 +5,7 @@ using Filmograf.BaseLibrary.DataAccess.Repositories;
 using Filmograf.BaseLibrary.Models.Context;
 using Filmograf.BaseLibrary.Services;
 using Filmograf.SearchService.Caching;
+using Filmograf.SearchService.DataAccess.IndexProviders;
 using Filmograf.SearchService.Services;
 
 namespace Filmograf.SearchService.Extensions;
@@ -38,6 +39,9 @@ internal static class ComponentsExtension
         services.AddScoped<UserProvider>();
         services.AddScoped<CollectionTagProvider>();
         services.AddScoped<GenreProvider>();
+        
+        // index providers
+        services.AddScoped<MovieSearchIndexProvider>();
         
         // repositories
         services.AddScoped<MovieRepository>();

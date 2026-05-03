@@ -26,6 +26,10 @@ public class ElasticIndexInitializer : IHostedService
                     .LongNumber(n => n.ViewsCount) 
                     .FloatNumber(f => f.RateIMDb)
                     .FloatNumber(f => f.RateFilmograf)
+        
+                    .Keyword(k => k.GenreIds) // keyword для точного поиска по ID жанра
+                    .IntegerNumber(i => i.Year)
+                    .IntegerNumber(i => i.AgeLimit)
                 )
             ),
             cancellationToken: ct

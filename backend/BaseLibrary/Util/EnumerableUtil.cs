@@ -6,4 +6,9 @@ public static class EnumerableUtil
     {
         return source.Where(item => !EqualityComparer<T>.Default.Equals(item, destination)).ToList();
     }
+
+    public static IEnumerable<string> GuidArrToStrArr(this IEnumerable<Guid> source)
+    {
+        return source.Select(item => item.ToString());
+    }
 }
