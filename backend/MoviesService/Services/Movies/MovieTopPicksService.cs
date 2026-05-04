@@ -54,6 +54,14 @@ public class MovieTopPicksService
 
         return chart;
     }
+
+    public async Task<EntitiesListResponseDto> GetUserHistoryAsync(PaginationQueryDto pagination, Guid userId)
+    {
+        var topPickKey = $"History:Movie:{userId}";
+        var chart = await _topPicksService.GetFromChartAsync(pagination, topPickKey);
+
+        return chart;
+    }
     
     public async Task UpdateMoviesChartAsync(string chartType, IEnumerable<RawMovieInfo> movies)
     {
