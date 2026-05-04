@@ -13,7 +13,6 @@ public class Program
         AppSettingsUtil.LoadAppSettingsData();
         LocalAppSettingsUtil.LoadAppSettingsData();
 
-        // Add AutoMapper
         builder.Services
             .AddAutoMapper(_ => { }, typeof(Program).Assembly)
             .AddRedis()
