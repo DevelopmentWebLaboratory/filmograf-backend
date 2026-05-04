@@ -5,7 +5,7 @@ using Filmograf.BaseLibrary.Services;
 using Filmograf.MoviesService.Integration.Requested;
 using Filmograf.MoviesService.Util;
 
-namespace Filmograf.MoviesService.Services;
+namespace Filmograf.MoviesService.Services.Integrations.Shell;
 
 public class MoviesParserService
 {

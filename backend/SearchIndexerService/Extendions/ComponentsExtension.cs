@@ -1,7 +1,6 @@
 ﻿using Filmograf.BaseLibrary.Caching;
 using Filmograf.BaseLibrary.DataAccess.Repositories;
 using Filmograf.BaseLibrary.Services;
-using Filmograf.SearchIndexerService.Caching;
 using Filmograf.SearchIndexerService.DataAccess.IndexProviders;
 using Filmograf.SearchIndexerService.Services;
 using Filmograf.SearchIndexerService.Services.Hosted;
@@ -19,7 +18,7 @@ internal static class ComponentsExtension
         services.AddScoped<RedisService>();
         services.AddScoped<MissionPlannerService>();
         services.AddScoped<MovieSearchIndexService>();
-        services.AddSingleton<MoviePickService>();
+        services.AddSingleton<DeferredQueuePickService>();
         services.AddScoped<MoviesReindexService>();
         
         // providers
@@ -36,7 +35,7 @@ internal static class ComponentsExtension
         
         // cache
         services.AddSingleton<MissionPlannerCache>();
-        services.AddSingleton<PickMoviesCaching>();
+        services.AddSingleton<DeferredQueuePickCaching>();
         
         // hosted
         services.AddHostedService<MoviesReindexBackgroundService>();

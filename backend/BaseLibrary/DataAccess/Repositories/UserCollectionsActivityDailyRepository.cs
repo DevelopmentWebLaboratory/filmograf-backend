@@ -45,12 +45,13 @@ public class UserCollectionsActivityDailyRepository : RepositoryBase<UserCollect
         );
 
         return await _collection.Find(filter)
-            .SortBy(x => x.Date)
+            .SortByDescending(x => x.Date)
             .FirstOrDefaultAsync(ct);
     }
 
     // Получить историю конкретного пользователя за период
-    public async Task<List<UserCollectionsActivityDailyRepo>> GetUserHistoryAsync(Guid userId, DateOnly from, DateOnly to, CancellationToken ct = default)
+    public async Task<List<UserCollectionsActivityDailyRepo>> GetUserHistoryAsync(Guid userId, DateOnly from, DateOnly to, 
+        CancellationToken ct = default)
     {
         var filter = Builders<UserCollectionsActivityDailyRepo>.Filter.And(
             Builders<UserCollectionsActivityDailyRepo>.Filter
@@ -64,7 +65,23 @@ public class UserCollectionsActivityDailyRepository : RepositoryBase<UserCollect
         );
 
         return await _collection.Find(filter)
-            .SortBy(x => x.Date)
+            .SortByDescending(x => x.Date)
+            .ToListAsync(ct);
+    }
+
+    // Получить историю конкретного пользователя с пагинацией
+    public async Task<List<UserCollectionsActivityDailyRepo>> GetUserHistoryAsync(Guid userId, int skip, int limit, 
+        CancellationToken ct = default)
+    {
+        var filter = Builders<UserCollectionsActivityDailyRepo>.Filter.And(
+            Builders<UserCollectionsActivityDailyRepo>.Filter
+                .Eq(x => x.UserId, userId)
+        );
+
+        return await _collection.Find(filter)
+            .SortByDescending(x => x.Date)
+            .Skip(skip)
+            .Limit(limit)
             .ToListAsync(ct);
     }
 }

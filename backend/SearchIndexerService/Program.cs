@@ -19,6 +19,7 @@ public class Program
             .AddRedis()
             .AddMongoDB()
             .AddComponents()
+            .AddRabbitMQ()
             .AddElastic();
         
         var host = builder.Build();

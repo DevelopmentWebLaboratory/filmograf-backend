@@ -2,6 +2,7 @@
 using Filmograf.BaseLibrary.Models.Dto;
 using Filmograf.BaseLibrary.Models.Types;
 using Filmograf.BaseLibrary.Services;
+using Filmograf.MoviesService.Services.Integrations.Shell;
 
 namespace Filmograf.MoviesService.Services.Movies;
 

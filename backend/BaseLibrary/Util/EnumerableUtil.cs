@@ -11,4 +11,9 @@ public static class EnumerableUtil
     {
         return source.Select(item => item.ToString());
     }
+
+    public static bool AnyIsNull(this IEnumerable<object?> items)
+    {
+        return items.Any(item => item == null);
+    }
 }

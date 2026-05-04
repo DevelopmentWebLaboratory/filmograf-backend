@@ -1,5 +1,7 @@
 ﻿using Filmograf.BaseLibrary.Integrations;
 using Filmograf.BaseLibrary.Integrations.Requested;
+using Filmograf.BaseLibrary.Services;
+using Filmograf.SearchIndexerService.Integration.Hosted;
 using Filmograf.SearchIndexerService.Services.Integrations;
 
 namespace Filmograf.SearchIndexerService.Extendions;
@@ -16,6 +18,7 @@ internal static class RabbitExtension
         
         // integration contexts
         services.AddScoped<IntegrationContextBase>();
+        services.AddScoped<PickMovieUpdateIntegrationContext>();
         
         return services;
     }

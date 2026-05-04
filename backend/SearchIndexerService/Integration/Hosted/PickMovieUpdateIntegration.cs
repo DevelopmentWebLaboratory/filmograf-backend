@@ -1,6 +1,8 @@
-﻿using Filmograf.BaseLibrary.Integrations;
+﻿using Filmograf.BaseLibrary.DataAccess.Repositories;
+using Filmograf.BaseLibrary.Integrations;
 using Filmograf.BaseLibrary.Integrations.Payload;
-using Filmograf.SearchIndexerService.Services;
+using Filmograf.BaseLibrary.Services;
+
 using RabbitMQ.Client;
 
 namespace Filmograf.SearchIndexerService.Integration.Hosted;
@@ -12,7 +14,12 @@ public class PickMovieUpdateIntegrationRequestPayload : IntegrationRequestPayloa
 
 public class PickMovieUpdateIntegrationContext : IntegrationContextBase
 {
-    public MoviePickService MoviePickService { get; set; }
+    public DeferredQueuePickService DeferredQueuePickService { get; set; }
+
+    public PickMovieUpdateIntegrationContext(DeferredQueuePickService deferredQueuePickService)
+    {
+        DeferredQueuePickService = deferredQueuePickService;
+    }
 }
 
 public class PickMovieUpdateIntegration : NoAskIntegrationBase<PickMovieUpdateIntegrationRequestPayload, PickMovieUpdateIntegrationContext>
@@ -21,12 +28,13 @@ public class PickMovieUpdateIntegration : NoAskIntegrationBase<PickMovieUpdateIn
     {
     }
 
+    private readonly string _deferredQueueName = "MoviePick";
     protected override Task ProcessingAsync(IntegrationRequest request, PickMovieUpdateIntegrationRequestPayload? payload,
         PickMovieUpdateIntegrationContext context)
     {
         if (payload == null) return Task.CompletedTask;
         
         var movieId = payload.MovieId;
-        return context.MoviePickService.PickMovieAsync(movieId);
+        return context.DeferredQueuePickService.PushAsync(_deferredQueueName, movieId);
     }
 }

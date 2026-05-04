@@ -1,7 +1,7 @@
 ﻿using Filmograf.BaseLibrary.Integrations.Requested;
 using Filmograf.MoviesService.Integration.Requested;
 
-namespace Filmograf.MoviesService.Services;
+namespace Filmograf.MoviesService.Services.Integrations.Shell;
 
 public class MoviesChartService
 {

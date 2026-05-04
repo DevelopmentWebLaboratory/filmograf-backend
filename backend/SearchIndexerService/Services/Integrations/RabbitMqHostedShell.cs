@@ -1,6 +1,7 @@
 ﻿using Filmograf.BaseLibrary.Integrations;
 using Filmograf.BaseLibrary.Integrations.Hosted;
 using Filmograf.BaseLibrary.Util;
+using Filmograf.SearchIndexerService.Integration.Hosted;
 
 namespace Filmograf.SearchIndexerService.Services.Integrations;
 
@@ -19,7 +20,7 @@ public class RabbitMqHostedService : RabbitMqHostedServiceBase
     protected override void InitListeners()
     {
         _integrationsBus = new Dictionary<string, IIntegrationHandler>();
-        // _integrationsBus["click_entity"] = new ClickEntityIntegration(_channel, "click_entity");
+        _integrationsBus["pick_movie"] = new PickMovieUpdateIntegration(_channel, "pick_movie");
         // ...
     }
 }
