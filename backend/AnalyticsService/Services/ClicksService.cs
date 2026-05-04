@@ -16,10 +16,8 @@ public class ClicksService
     private readonly CollectionViewsCountingService _collectionViewsCountingService;
     
     private readonly MovieRateCountingService _movieRateCountingService;
+    private readonly DeferredQueueHistoryBuildingService _historyBuildingService;
     
-    private readonly MoviesHistoryBuildingService _moviesHistoryService;
-    private readonly CollectionsHistoryBuildingService _collectionsHistoryService;
-
     
     private delegate Task HandleClickEntity(string entityId, Guid userId);
     private readonly Dictionary<string, HandleClickEntity> _clickHandlers;
@@ -30,13 +28,12 @@ public class ClicksService
     private delegate Task HandleRateCountEntity(string entityId);
     private readonly Dictionary<string, HandleRateCountEntity> _rateCountingHandlers;
     
-    private delegate Task HandleBuildHistory(Guid userId);
-    private readonly Dictionary<string, HandleBuildHistory> _buildHistoryHandlers;
+    
 
     public ClicksService(ClickIntervalValidator clickIntervalValidator, MovieClicksService movieClicksService, 
         CollectionClicksService collectionClicksService, MovieViewsCountingService movieViewsCountingService,
         CollectionViewsCountingService collectionViewsCountingService, MovieRateCountingService movieRateCountingService,
-        MoviesHistoryBuildingService moviesHistoryService, CollectionsHistoryBuildingService collectionsHistoryService)
+        DeferredQueueHistoryBuildingService historyBuildingService)
     {
         _clickIntervalValidator = clickIntervalValidator;
         _movieClicksService = movieClicksService;
@@ -44,8 +41,7 @@ public class ClicksService
         _movieViewsCountingService = movieViewsCountingService;
         _collectionViewsCountingService = collectionViewsCountingService;
         _movieRateCountingService = movieRateCountingService;
-        _moviesHistoryService = moviesHistoryService;
-        _collectionsHistoryService = collectionsHistoryService;
+        _historyBuildingService = historyBuildingService;
 
         _clickHandlers = new Dictionary<string, HandleClickEntity>
         {
@@ -63,12 +59,6 @@ public class ClicksService
         {
             { "Movie", _movieRateCountingService.HandleCountRateAsync }
         };
-
-        _buildHistoryHandlers = new Dictionary<string, HandleBuildHistory>
-        {
-            { "Movie", _moviesHistoryService.HandleBuildHistoryAsync },
-            { "Collection", _collectionsHistoryService.HandleBuildHistoryAsync }
-        };
     }
 
     public async Task HandleClickAsync(string entityType, string entityId, Guid userId)
@@ -78,8 +68,7 @@ public class ClicksService
         
         var clickHandler = _clickHandlers.GetValueOrDefault(entityType);
         var clickCountingHandler = _clickCountingHandlers.GetValueOrDefault(entityType);
-        var buildHistoryHandler = _buildHistoryHandlers.GetValueOrDefault(entityType);
-        var handlers = new object?[] { clickHandler, clickCountingHandler, buildHistoryHandler };
+        var handlers = new object?[] { clickHandler, clickCountingHandler };
         
         if (handlers.AnyIsNull()) throw new BadRequestHttpException("InvalidHandlerType");
 
@@ -91,10 +80,10 @@ public class ClicksService
         // пересчитываем оценку, если это филльм
         if (rateCountingHandler != null) await rateCountingHandler(entityId);
         
-        // грубо параллелим
-        await Task.WhenAll(
-            clickCountingHandler(entityId), // пересчитываем кол-во кликов
-            buildHistoryHandler(userId) // билдим историю просмотров пользователя todo: to deferred queue
-        );
+        // пересчитываем кол-во кликов
+        await clickCountingHandler(entityId);
+        
+        // добавляем задачу на обновление истории просмотра пользователя
+        await _historyBuildingService.PushBuildHistoryTask(entityType, userId);
     }
 }

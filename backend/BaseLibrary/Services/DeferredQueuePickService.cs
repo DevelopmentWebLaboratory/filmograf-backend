@@ -11,9 +11,9 @@ public class DeferredQueuePickService
         _deferredQueuePickCaching = deferredQueuePickCaching;
     }
     
-    public async Task PushAsync(string queueType, string movieId)
+    public async Task PushAsync(string queueType, string entityId)
     {
-        await _deferredQueuePickCaching.SetAsync(queueType, movieId);
+        await _deferredQueuePickCaching.SetAsync(queueType, entityId);
     }
 
     public async Task<List<string>> PullIdsAsync(string queueType)

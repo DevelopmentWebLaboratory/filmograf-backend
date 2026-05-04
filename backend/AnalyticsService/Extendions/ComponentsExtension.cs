@@ -1,6 +1,8 @@
 ﻿using Filmograf.AnalyticsService.Caching;
 using Filmograf.AnalyticsService.Services;
 using Filmograf.AnalyticsService.Services.Charts;
+using Filmograf.AnalyticsService.Services.HistoryBuilding;
+using Filmograf.AnalyticsService.Services.Hosted;
 using Filmograf.AnalyticsService.Services.Personalized;
 using Filmograf.AnalyticsService.Services.RateCounting;
 using Filmograf.AnalyticsService.Services.ViewsCounting;
@@ -34,6 +36,11 @@ internal static class ComponentsExtension
         services.AddScoped<MovieViewsCountingService>();
         services.AddScoped<MissionPlannerService>();
         services.AddScoped<MovieRateCountingService>();
+        services.AddScoped<HistoryBuildingService>();
+        services.AddScoped<DeferredQueueHistoryBuildingService>();
+        services.AddScoped<MoviesHistoryBuildingService>();
+        services.AddScoped<CollectionsHistoryBuildingService>();
+        services.AddSingleton<DeferredQueuePickService>();
         
         // providers
         // ...
@@ -54,6 +61,10 @@ internal static class ComponentsExtension
         services.AddScoped<CollectionsCaching>();
         services.AddScoped<TopPickCaching>();
         services.AddScoped<MissionPlannerCache>();
+        services.AddSingleton<DeferredQueuePickCaching>();
+        
+        // hosted
+        services.AddHostedService<HistoryBuildingBackgroundService>();
 
         return services;
     }
