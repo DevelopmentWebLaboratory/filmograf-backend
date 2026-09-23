@@ -88,3 +88,4 @@ backend/MoviesService/MoviesService.csproj.user
 /backend/SearchIndexerService/.idea
 /backend/SearchIndexerService/bin
 /backend/SearchIndexerService/obj
+.DS_Store
